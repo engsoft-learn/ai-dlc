@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-DLC — AI-Driven Development Life Cycle</title>
+  <style>
+    :root {
+      --blue-dark:  #0f2044;
+      --blue-mid:   #1a3a6b;
+      --blue-light: #2563eb;
+      --accent:     #f59e0b;
+      --white:      #ffffff;
+      --gray-light: #f1f5f9;
+      --gray-text:  #64748b;
+      --text:       #1e293b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #cbd5e1;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 0 64px;
+      gap: 32px;
+    }
+
+    /* Slide */
+    .slide {
+      width: 297mm;
+      min-height: 210mm;
+      background: var(--white);
+      border-radius: 4px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.18);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      page-break-after: always;
+      position: relative;
+    }
+
+    /* Capa */
+    .cover {
+      background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-mid) 60%, var(--blue-light) 100%);
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 40px;
+    }
+    .cover .tag {
+      background: var(--accent);
+      color: var(--blue-dark);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 24px;
+    }
+    .cover h1 {
+      font-size: 56px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -1px;
+      line-height: 1.1;
+    }
+    .cover h1 span { color: var(--accent); }
+    .cover .desc {
+      font-size: 18px;
+      color: rgba(255,255,255,.75);
+      margin-top: 14px;
+    }
+    .cover .subtitle {
+      font-size: 13px;
+      color: rgba(255,255,255,.45);
+      margin-top: 28px;
+      letter-spacing: .4px;
+    }
+    .cover-footer {
+      position: absolute;
+      bottom: 18px;
+      left: 0; right: 0;
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,.4);
+      letter-spacing: .4px;
+    }
+
+    /* Cabeçalho padrão */
+    .slide-header {
+      background: var(--blue-dark);
+      padding: 20px 40px 16px;
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
+    .slide-header .label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .slide-header h2 {
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    /* Corpo */
+    .slide-body {
+      padding: 26px 40px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* Rodapé */
+    .slide-footer {
+      padding: 9px 40px;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .slide-footer span {
+      font-size: 10px;
+      color: var(--gray-text);
+      letter-spacing: .3px;
+    }
+    .slide-footer .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    /* Texto corrido */
+    p.lead {
+      font-size: 14.5px;
+      line-height: 1.75;
+      color: var(--text);
+    }
+
+    /* Caixa de destaque */
+    .box {
+      background: var(--blue-dark);
+      color: var(--white);
+      border-radius: 8px;
+      padding: 16px 22px;
+      font-size: 14px;
+      line-height: 1.65;
+    }
+    .box strong { color: var(--accent); }
+
+    /* Card */
+    .card {
+      background: var(--gray-light);
+      border-radius: 10px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .card h3 {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--blue-dark);
+    }
+    .card p, .card ul {
+      font-size: 13px;
+      line-height: 1.65;
+      color: #334155;
+    }
+
+    /* Chip badge inline */
+    .chip {
+      background: var(--blue-light);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 10px;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+
+    /* Lista com bolinha */
+    ul.bullet {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    ul.bullet li {
+      font-size: 13.5px;
+      color: var(--text);
+      line-height: 1.5;
+      padding-left: 18px;
+      position: relative;
+    }
+    ul.bullet li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 7px;
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Grid dois colunas */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      flex: 1;
+    }
+
+    /* Badge de ritual */
+    .ritual {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--blue-dark);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-bottom: 4px;
+    }
+
+    /* Tag de fase */
+    .phase-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+    .tag-blue   { background: #dbeafe; color: #1e40af; }
+    .tag-orange { background: #ffedd5; color: #9a3412; }
+    .tag-slate  { background: #e2e8f0; color: #334155; }
+
+    /* Coluna de output items */
+    .output-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      background: var(--gray-light);
+      border-radius: 6px;
+      padding: 7px 11px;
+      font-size: 12.5px;
+      color: var(--text);
+      line-height: 1.4;
+    }
+    .output-item .ic { flex-shrink: 0; margin-top: 1px; }
+
+    /* Três cards iguais */
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      flex: 1;
+    }
+    .dark-card {
+      background: var(--blue-dark);
+      border-radius: 10px;
+      padding: 20px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .dark-card .acronym {
+      font-size: 30px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+    .dark-card .name {
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255,255,255,.85);
+    }
+    .dark-card .desc {
+      font-size: 12px;
+      color: rgba(255,255,255,.55);
+      line-height: 1.55;
+      margin-top: 4px;
+    }
+
+    /* Green / Brown field */
+    .green-card {
+      border-radius: 10px;
+      padding: 22px;
+      background: #ecfdf5;
+      border: 2px solid #34d399;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+    .brown-card {
+      border-radius: 10px;
+      padding: 22px;
+      background: #fefce8;
+      border: 2px solid #fbbf24;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+    .green-card h3 { font-size: 17px; font-weight: 800; color: #065f46; }
+    .brown-card h3 { font-size: 17px; font-weight: 800; color: #78350f; }
+    .green-card p, .brown-card p { font-size: 13px; line-height: 1.6; color: #374151; }
+
+    @media print {
+      body { background: white; padding: 0; gap: 0; }
+      .slide { box-shadow: none; border-radius: 0; page-break-after: always; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ SLIDE 1 — Capa ══ -->
+<section class="slide cover">
+  <div class="tag">AWS · Metodologia</div>
+  <h1>AI-<span>DLC</span></h1>
+  <div class="desc">AI-Driven Development Life Cycle</div>
+  <div class="subtitle">Uma nova metodologia de desenvolvimento guiada por Inteligência Artificial</div>
+  <div class="cover-footer">Ricardo de Luna Galdino — Software Engineer — Jun/2026</div>
+</section>
+
+
+<!-- ══ SLIDE 2 — Contexto Atual ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Introdução</span>
+    <h2>Contexto Atual</h2>
+  </div>
+  <div class="slide-body">
+    <p class="lead">
+      A engenharia de software está passando por uma nova revolução com a chegada dos
+      <strong>Grandes Modelos de Linguagem (LLMs)</strong>. Metodologias que funcionavam bem antes
+      já não atendem da mesma forma às demandas atuais.
+    </p>
+    <div class="two-col" style="flex:unset;">
+      <div class="card">
+        <h3>O que já é possível hoje</h3>
+        <p>Usar linguagem natural para <strong>gerar código</strong>, detectar bugs e criar testes automaticamente.</p>
+      </div>
+      <div class="card">
+        <h3>O que está surgindo agora</h3>
+        <p>A IA começa a participar de <strong>elaboração de requisitos, planejamento, divisão de tarefas, design e colaboração em tempo real</strong>.</p>
+      </div>
+    </div>
+    <div class="box">
+      Os métodos atuais foram feitos para times humanos em ciclos longos. Precisamos de metodologias criadas <strong>desde o início para trabalhar com IA</strong>.
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>2 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 3 — O que é AI-DLC ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Definição</span>
+    <h2>O que é AI-DLC?</h2>
+  </div>
+  <div class="slide-body">
+    <p class="lead">
+      O AI-DLC <em>(AI-Driven Development Life Cycle)</em> é uma metodologia de desenvolvimento de software —
+      assim como Scrum e Kanban —, mas construída desde o início para trabalhar com agentes de IA
+      em todo o ciclo de vida: da intenção de negócio à produção.
+    </p>
+    <div class="two-col" style="flex:unset;">
+      <div class="card">
+        <h3>Papel da IA</h3>
+        <p>Conduz e propõe. Inicia a conversa, decompõe tarefas, gera recomendações e apresenta opções com trade-offs.</p>
+      </div>
+      <div class="card">
+        <h3>Papel do Humano</h3>
+        <p>Age como <strong>supervisor e aprovador</strong>: valida, escolhe e confirma as decisões em todos os momentos.</p>
+      </div>
+    </div>
+    <p class="lead" style="font-size:13px; color:var(--gray-text);">
+      Criado em <strong>2025</strong>, mantido pela <strong>AWS (Amazon Web Services)</strong> — a metodologia está em <strong>constante evolução</strong>, acompanhando o avanço das capacidades dos modelos de IA.
+    </p>
+    <div class="box">
+      O AI-DLC evita os riscos do <strong>"vibe-coding"</strong> — desenvolver sem planejamento, apenas seguindo o fluxo — e traz disciplina de engenharia de software para o desenvolvimento assistido por IA.
+    </div>
+    <div style="text-align:right; font-size:11.5px; color:var(--gray-text); margin-top:2px;">
+      📄 White Paper: <a href="https://prod.d13rzhkk8cj2z0.amplifyapp.com/" style="color:var(--blue-light);">prod.d13rzhkk8cj2z0.amplifyapp.com</a>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>3 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 4 — Princípios Fundamentais ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Princípios Fundamentais</span>
+    <h2>Uma Metodologia Reimaginada</h2>
+  </div>
+  <div class="slide-body">
+    <p class="lead">
+      Os métodos tradicionais como Scrum e Kanban foram criados para times humanos trabalhando em
+      ciclos longos, de semanas ou meses. <strong>Com o AI-DLC, esses ciclos passam a ser medidos em horas ou dias.</strong>
+    </p>
+    <p class="lead" style="font-size:13.5px; color: var(--gray-text);">
+      A metodologia preserva os conceitos que já conhecemos em métodos ágeis (Scrum), mas atualiza a terminologia e os rituais onde necessário para refletir essa nova realidade:
+    </p>
+    <div class="two-col">
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="card">
+          <h3>Intent <span class="chip">Intenção</span></h3>
+          <p>Declaração de alto nível que a IA <strong>decompõe em Unidades</strong>. Pode ser um objetivo de negócio, nova funcionalidade, resultado técnico, melhoria, modernização ou correção de bugs.</p>
+        </div>
+        <div class="card">
+          <h3>User Stories</h3>
+          <p>Estão <strong>dentro de um Bolt</strong>. Alinham o entendimento de humanos e IA sobre o que precisa ser construído — funcionando como um <strong>contrato claro</strong> entre as partes.</p>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="card">
+          <h3>Units <span class="chip">≈ Épicos</span></h3>
+          <p>Derivadas de uma <strong>Intenção</strong>. Cada Unidade <strong>agrupa seus Bolts</strong>. Fracamente acopladas entre si — podem ser desenvolvidas e implantadas de forma independente.</p>
+        </div>
+        <div class="card">
+          <h3>Bolts <span class="chip">≈ Sprints</span></h3>
+          <p>Pertencem a uma <strong>Unidade</strong> e <strong>contêm User Stories</strong>. Duração de <strong>horas ou dias</strong>. Podem ser executados em paralelo ou em sequência.</p>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--blue-dark); border-radius:8px; padding:10px 20px; display:flex; align-items:center; justify-content:center; gap:8px; font-size:13px; color:var(--white); font-weight:600; letter-spacing:.3px;">
+      <span style="color:var(--accent);">Intent</span>
+      <span style="color:rgba(255,255,255,.4);">→ decompõe em →</span>
+      <span style="color:var(--accent);">Units</span>
+      <span style="color:rgba(255,255,255,.4);">→ agrupam →</span>
+      <span style="color:var(--accent);">Bolts</span>
+      <span style="color:rgba(255,255,255,.4);">→ contêm →</span>
+      <span style="color:var(--accent);">User Stories</span>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>4 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 5 — Técnicas de Design ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Qualidade de Software</span>
+    <h2>Técnicas de Design Integradas</h2>
+  </div>
+  <div class="slide-body">
+    <p class="lead">
+      O AI-DLC já traz, em seu núcleo, técnicas consolidadas de design de software.
+      A IA as aplica <strong>automaticamente</strong> durante o planejamento; o desenvolvedor valida e ajusta.
+    </p>
+    <div class="three-col">
+      <div class="dark-card">
+        <div class="acronym">DDD</div>
+        <div class="name">Domain-Driven Design</div>
+        <div class="desc">Para modelar a lógica de negócio de forma independente dos componentes de infraestrutura.</div>
+      </div>
+      <div class="dark-card">
+        <div class="acronym">TDD</div>
+        <div class="name">Test-Driven Development</div>
+        <div class="desc">Para garantir qualidade desde o início do ciclo de desenvolvimento.</div>
+      </div>
+      <div class="dark-card">
+        <div class="acronym">BDD</div>
+        <div class="name">Behavior-Driven Development</div>
+        <div class="desc">Para alinhar o comportamento esperado do sistema com cenários de teste compreensíveis por todos.</div>
+      </div>
+    </div>
+    <div class="box">
+      Ao contrário de Scrum e Kanban, o AI-DLC <strong>não deixa as técnicas de design como opcionais</strong>. Elas são parte central do método, visando garantir a qualidade do software produzido.
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>5 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 6 — Classificação de Projetos ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Tipos de Projeto</span>
+    <h2>Classificação de Projetos</h2>
+  </div>
+  <div class="slide-body">
+    <p class="lead">O AI-DLC atende dois perfis de projeto, com abordagens ligeiramente diferentes na fase de construção.</p>
+    <div class="two-col">
+      <div class="green-card">
+        <h3>🟢 Green-field</h3>
+        <p><strong>Desenvolvimento de sistemas novos, do zero.</strong></p>
+        <p>A IA parte da Intenção e constrói toda a modelagem, arquitetura e código sem dependências com código existente.</p>
+      </div>
+      <div class="brown-card">
+        <h3>🟡 Brown-field</h3>
+        <p><strong>Evolução de sistemas já existentes.</strong></p>
+        <p>O AI-DLC se destaca ao fazer <strong>engenharia reversa</strong> do código existente, gerando documentações ricas com modelos estáticos e dinâmicos do sistema antes de evoluí-lo.</p>
+      </div>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>6 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 7 — Fluxo de Trabalho ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Fluxo de Trabalho</span>
+    <h2>Fases e Rituais</h2>
+  </div>
+  <div class="slide-body">
+    <p class="lead">O AI-DLC é organizado em três fases sequenciais, cada uma com seus rituais e artefatos.</p>
+    <div class="three-col">
+      <div class="dark-card" style="background: #1e3a5f;">
+        <div style="font-size:28px; font-weight:800; color:var(--accent); line-height:1;">01</div>
+        <div style="font-size:15px; font-weight:700; color:var(--white); margin-top:4px;">Inception Phase</div>
+        <div style="font-size:11px; color:rgba(255,255,255,.5); margin-top:2px;">Fase de Iniciação</div>
+        <div style="font-size:12px; color:rgba(255,255,255,.65); margin-top:10px; line-height:1.55;">Captura as Intenções e as transforma em Unidades para desenvolvimento.</div>
+      </div>
+      <div class="dark-card" style="background: #1a3a6b;">
+        <div style="font-size:28px; font-weight:800; color:var(--accent); line-height:1;">02</div>
+        <div style="font-size:15px; font-weight:700; color:var(--white); margin-top:4px;">Construction Phase</div>
+        <div style="font-size:11px; color:rgba(255,255,255,.5); margin-top:2px;">Fase de Construção</div>
+        <div style="font-size:12px; color:rgba(255,255,255,.65); margin-top:10px; line-height:1.55;">Execução iterativa que transforma as Unidades em código e testes prontos para produção.</div>
+      </div>
+      <div class="dark-card" style="background: #15294f;">
+        <div style="font-size:28px; font-weight:800; color:var(--accent); line-height:1;">03</div>
+        <div style="font-size:15px; font-weight:700; color:var(--white); margin-top:4px;">Operations Phase</div>
+        <div style="font-size:11px; color:rgba(255,255,255,.5); margin-top:2px;">Fase de Operações</div>
+        <div style="font-size:12px; color:rgba(255,255,255,.65); margin-top:10px; line-height:1.55;">Implantação, observabilidade e manutenção com eficiência operacional via IA.</div>
+      </div>
+    </div>
+    <div class="box">
+      Em todo o processo: <strong>a IA planeja, decompõe e gera — os humanos supervisionam e validam.</strong>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>7 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 9 — Inception + Construction ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Fases 01 e 02</span>
+    <h2>Inception Phase &amp; Construction Phase</h2>
+  </div>
+  <div class="slide-body" style="gap: 12px;">
+    <div class="two-col">
+
+      <!-- Inception -->
+      <div style="display:flex; flex-direction:column; gap:9px;">
+        <span class="phase-tag tag-blue">01 · Inception Phase</span>
+        <p style="font-size:13px; line-height:1.6; color:var(--text);">Captura as Intenções e as transforma em Unidades para desenvolvimento.</p>
+        <span class="ritual">Rito: Mob Elaboration</span>
+        <p style="font-size:12.5px; line-height:1.6; color:#334155;">Sessão colaborativa com todos na mesma sala, em frente a uma tela compartilhada, conduzida por um facilitador. A IA propõe uma divisão inicial; o time revisa e refina colaborativamente.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-top:2px;">
+          <div class="output-item"><span class="ic">📋</span>Histórias de Usuário (User Stories)</div>
+          <div class="output-item"><span class="ic">⚙️</span>Requisitos Funcionais e Não-Funcionais</div>
+          <div class="output-item"><span class="ic">⚠️</span>Descrição de Riscos</div>
+          <div class="output-item"><span class="ic">✅</span>Critérios de Aceite</div>
+          <div class="output-item"><span class="ic">⚡</span>Sugestão de Bolts</div>
+        </div>
+      </div>
+
+      <!-- Construction -->
+      <div style="display:flex; flex-direction:column; gap:9px;">
+        <span class="phase-tag tag-orange">02 · Construction Phase</span>
+        <p style="font-size:13px; line-height:1.6; color:var(--text);">Execução iterativa das tarefas — transforma as Unidades em código e testes prontos para produção.</p>
+        <span class="ritual">Rito: Mob Construction</span>
+        <p style="font-size:12.5px; line-height:1.6; color:#334155;">Mesmo formato colaborativo do Mob Elaboration. A IA orienta e gera; o time revisa, valida e toma as decisões técnicas em conjunto.</p>
+        <div style="display:flex; flex-direction:column; gap:5px; margin-top:2px;">
+          <div class="output-item"><span class="ic">🏗️</span>Escolhas tecnológicas e suas justificativas</div>
+          <div class="output-item"><span class="ic">🏛️</span>Definições arquiteturais</div>
+          <div class="output-item"><span class="ic">📐</span>Regras de negócio, validação e restrições</div>
+          <div class="output-item"><span class="ic">🔗</span>Modelos de domínio com entidades e relacionamentos</div>
+          <div class="output-item"><span class="ic">🔒</span>Requisitos de escala, performance e segurança</div>
+          <div class="output-item"><span class="ic">🧪</span>Testes automatizados (funcional, segurança, performance)</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>8 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 9 — Operations ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Fase 03</span>
+    <h2>Operations Phase — Fase de Operações</h2>
+  </div>
+  <div class="slide-body">
+    <p class="lead">
+      Cobre <strong>deploy, DevOps, observabilidade e manutenção</strong> dos sistemas,
+      usando a IA para ganhar eficiência operacional.
+    </p>
+    <div class="three-col">
+      <div class="card">
+        <h3>🚀 Deploy</h3>
+        <p>A IA empacota as Unidades em artefatos prontos para produção — containers, funções serverless e IaC (Terraform, CloudFormation). Os desenvolvedores aprovam e iniciam o rollout.</p>
+      </div>
+      <div class="card">
+        <h3>⚙️ DevOps</h3>
+        <p>Automação de implantação, infraestrutura como código e validação de prontidão para produção. A IA gera e executa os pipelines sob supervisão humana.</p>
+      </div>
+      <div class="card">
+        <h3>📊 Observabilidade</h3>
+        <p>A IA analisa <strong>métricas, logs e rastreamentos</strong> para detectar anomalias e propor ações corretivas — executadas somente após aprovação humana.</p>
+      </div>
+    </div>
+    <div class="box" style="background:#1e3a5f; font-size:13px;">
+      ⚠️ &nbsp;Esta fase ainda está sendo desenvolvida pela AWS e ainda não possui artefatos de resultado definidos.
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>9 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 10 — Fluxo de Planejamento ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Como Funciona</span>
+    <h2>Fluxo de Planejamento e Validação</h2>
+  </div>
+  <div class="slide-body" style="gap:14px;">
+
+    <div class="card" style="background:#eff6ff; border-left:3px solid var(--blue-light); gap:10px;">
+      <h3>1. Plano de Nível 1 — antes de tudo</h3>
+      <p>Ao receber o Intent, a IA gera um <strong>Plano de Nível 1</strong>: uma visão geral das etapas que serão executadas. O time revisa, ajusta e aprova antes de qualquer artefato ser gerado. Nenhum trabalho começa sem essa aprovação.</p>
+    </div>
+
+    <div class="card" style="border-left:3px solid var(--accent); gap:10px;">
+      <h3>2. Dentro de cada etapa — o ciclo se repete</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:4px;">
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div class="output-item"><span class="ic">📝</span><span><strong>IA propõe um plano detalhado</strong> com checkboxes para cada sub-passo — nenhum artefato é gerado até o humano aprovar.</span></div>
+          <div class="output-item"><span class="ic">❓</span><span><strong>IA escreve as dúvidas em arquivo</strong> <code style="font-size:10.5px;">requirement-verification-questions.md</code> — nunca no chat. O time preenche as respostas e avisa a IA para reler.</span></div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div class="output-item"><span class="ic">⚙️</span><span><strong>IA executa passo a passo</strong>, marcando os checkboxes conforme conclui cada sub-passo do plano aprovado.</span></div>
+          <div class="output-item"><span class="ic">✅</span><span><strong>Gate de aprovação:</strong> ao final de cada etapa a IA para. O time escolhe <em>Solicitar Alterações</em> ou <em>Aprovar e Continuar</em>.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="box" style="font-size:13px; text-align:center;">
+      <strong>IA planeja → humano valida → IA executa → humano aprova → próxima etapa</strong><br>
+      <span style="font-size:12px; color:rgba(255,255,255,.65); margin-top:4px; display:block;">Cada gate captura erros antes que se propaguem — um erro na modelagem custa muito menos do que no código.</span>
+    </div>
+
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>10 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 11 — Estrutura de Pastas ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Organização</span>
+    <h2>Estrutura de Pastas no Projeto</h2>
+  </div>
+  <div class="slide-body" style="gap:16px;">
+    <p class="lead">
+      Ao configurar o AI-DLC, duas pastas principais passam a existir na raiz do seu projeto.
+      É importante entender o papel de cada uma para não mexer onde não deve — e saber onde encontrar tudo que a IA produz.
+    </p>
+    <div class="two-col">
+
+      <!-- Pasta de Regras -->
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="card" style="flex:1; border-left:3px solid #ef4444;">
+          <h3>🔒 <code style="background:#e2e8f0; padding:1px 5px; border-radius:3px; font-size:12px;">.aidlc-rule-details/</code> — Regras — o "motor" do AI-DLC</h3>
+          <p>Esta pasta contém as <strong>instruções que a IA segue</strong> para conduzir todo o fluxo de trabalho. Pense nela como o <strong>manual de operações</strong> que o assistente lê para saber o que fazer em cada fase.</p>
+        </div>
+        <div class="box" style="font-size:12.5px; background:#7f1d1d;">
+          ⚠️ <strong>Não edite esses arquivos manualmente.</strong> Eles são mantidos pela AWS e atualizados a cada nova release. Alterá-los pode fazer a IA se comportar de forma inesperada ou pular etapas importantes.
+        </div>
+      </div>
+
+      <!-- Pasta aidlc-docs -->
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="card" style="flex:1; border-left:3px solid #22c55e;">
+          <h3>📂 <code style="background:#e2e8f0; padding:1px 5px; border-radius:3px; font-size:12px;">aidlc-docs/</code> — onde tudo é gerado</h3>
+          <p>Esta é a pasta onde ficam <strong>todos os artefatos e documentos produzidos</strong> durante o uso do AI-DLC — desde requisitos e User Stories até modelos de domínio e definições arquiteturais.</p>
+          <p>O código da aplicação <strong>nunca</strong> fica aqui — apenas documentação em Markdown, organizada por fase e por Unidade de trabalho.</p>
+        </div>
+        <div class="box" style="font-size:12.5px; background:#14532d;">
+          ✅ Todo o resultado do trabalho da IA estará aqui, organizado automaticamente. Você sempre consulta esta pasta para ver o que foi gerado.
+        </div>
+      </div>
+
+    </div>
+    <div class="box" style="font-size:13px; text-align:center;">
+      <strong>A pasta de regras ensina a IA o que fazer</strong> &nbsp;·&nbsp; <strong>A pasta <code style="font-size:12px; background:rgba(255,255,255,.15); padding:1px 6px; border-radius:3px;">aidlc-docs/</code> guarda o que a IA produziu</strong>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>11 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 12 — Artefatos: Inception ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Artefatos — Inception Phase</span>
+    <h2>O que é Gerado na Iniciação</h2>
+  </div>
+  <div class="slide-body" style="gap:10px;">
+    <p class="lead" style="font-size:13px;">
+      Todos os artefatos ficam em <code style="background:#e2e8f0; padding:1px 6px; border-radius:3px; font-size:11px;">aidlc-docs/inception/</code>.
+    </p>
+    <div class="two-col" style="flex:1; gap:14px;">
+
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <div class="phase-tag tag-blue" style="margin-bottom:2px;">Requirements</div>
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <div class="card" style="gap:4px;">
+            <h3 style="font-size:12px;">📋 requirements.md</h3>
+            <p style="font-size:11.5px; color:#475569;"><code>requirements/</code></p>
+            <p style="font-size:12px;">Requisitos funcionais e não-funcionais derivados do Intent, com análise de intenção de negócio.</p>
+          </div>
+          <div class="card" style="gap:4px;">
+            <h3 style="font-size:12px;">❓ requirement-verification-questions.md</h3>
+            <p style="font-size:11.5px; color:#475569;"><code>requirements/</code></p>
+            <p style="font-size:12px;">Perguntas de esclarecimento geradas pela IA com tags <code>[Answer]:</code> para o time responder antes de prosseguir.</p>
+          </div>
+        </div>
+        <div class="phase-tag tag-blue" style="margin-top:6px; margin-bottom:2px;">User Stories</div>
+        <div class="card" style="gap:4px;">
+          <h3 style="font-size:12px;">📖 stories.md</h3>
+          <p style="font-size:11.5px; color:#475569;"><code>user-stories/</code></p>
+          <p style="font-size:12px;">User Stories no padrão INVEST com critérios de aceitação detalhados para cada história.</p>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <div class="phase-tag tag-blue" style="margin-bottom:2px;">Application Design</div>
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <div class="card" style="gap:4px;">
+            <h3 style="font-size:12px;">🧩 unit-of-work.md</h3>
+            <p style="font-size:11.5px; color:#475569;"><code>application-design/</code></p>
+            <p style="font-size:12px;">Definição de cada Unidade de trabalho: nome, responsabilidade, escopo e dependências entre Unidades.</p>
+          </div>
+          <div class="card" style="gap:4px;">
+            <h3 style="font-size:12px;">🗺️ unit-of-work-story-map.md</h3>
+            <p style="font-size:11.5px; color:#475569;"><code>application-design/</code></p>
+            <p style="font-size:12px;">Mapeamento de quais User Stories pertencem a cada Unidade, agrupadas em Bolts para execução.</p>
+          </div>
+        </div>
+        <div class="phase-tag tag-slate" style="margin-top:6px; margin-bottom:2px;">Brown-field — Engenharia Reversa</div>
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <div class="card" style="gap:4px;">
+            <h3 style="font-size:12px;">🏢 architecture.md</h3>
+            <p style="font-size:11.5px; color:#475569;"><code>reverse-engineering/</code></p>
+            <p style="font-size:12px;">Diagramas e descrições da arquitetura atual do sistema, fluxo de dados e relacionamento entre componentes.</p>
+          </div>
+          <div class="card" style="gap:4px;">
+            <h3 style="font-size:12px;">🔍 code-quality-assessment.md</h3>
+            <p style="font-size:11.5px; color:#475569;"><code>reverse-engineering/</code></p>
+            <p style="font-size:12px;">Cobertura de testes, indicadores de qualidade e dívida técnica identificada no código existente.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>12 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 11 — Artefatos: Construction ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Artefatos — Construction Phase</span>
+    <h2>O que é Gerado na Construção</h2>
+  </div>
+  <div class="slide-body" style="gap:10px;">
+    <p class="lead" style="font-size:13px;">
+      Artefatos ficam em <code style="background:#e2e8f0; padding:1px 6px; border-radius:3px; font-size:11px;">aidlc-docs/construction/</code>.
+    </p>
+    <div class="two-col" style="flex:1; gap:14px;">
+
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <div class="phase-tag tag-orange" style="margin-bottom:2px;">Functional Design</div>
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <div class="card" style="gap:4px;">
+            <h3 style="font-size:12px;">📐 business-rules.md</h3>
+            <p style="font-size:11.5px; color:#475569;"><code>functional-design/</code></p>
+            <p style="font-size:12px;">Regras de negócio, lógica de validação e restrições que o código deve respeitar.</p>
+          </div>
+          <div class="card" style="gap:4px;">
+            <h3 style="font-size:12px;">🔗 domain-entities.md</h3>
+            <p style="font-size:11.5px; color:#475569;"><code>functional-design/</code></p>
+            <p style="font-size:12px;">Modelos de domínio com entidades, atributos, comportamentos e relacionamentos entre eles.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <div class="phase-tag tag-orange" style="margin-bottom:2px;">NFR Requirements &amp; Design</div>
+        <div style="display:flex; flex-direction:column; gap:5px;">
+          <div class="card" style="gap:4px;">
+            <h3 style="font-size:12px;">🏗️ tech-stack-decisions.md</h3>
+            <p style="font-size:11.5px; color:#475569;"><code>nfr-requirements/</code></p>
+            <p style="font-size:12px;">Escolhas tecnológicas com justificativas: linguagens, frameworks, serviços cloud e suas razões.</p>
+          </div>
+          <div class="card" style="gap:4px;">
+            <h3 style="font-size:12px;">🔒 nfr-requirements.md</h3>
+            <p style="font-size:11.5px; color:#475569;"><code>nfr-requirements/</code></p>
+            <p style="font-size:12px;">Requisitos de escalabilidade, performance, disponibilidade e segurança para a Unidade.</p>
+          </div>
+          <div class="card" style="gap:4px;">
+            <h3 style="font-size:12px;">🏛️ nfr-design-patterns.md</h3>
+            <p style="font-size:11.5px; color:#475569;"><code>nfr-design/</code></p>
+            <p style="font-size:12px;">Definições arquiteturais: padrões de resiliência, escalabilidade, performance e segurança aplicados.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>13 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 11 (antes 10) — Documentos de Input ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Antes de Começar</span>
+    <h2>Documentos de Input</h2>
+  </div>
+  <div class="slide-body" style="gap: 14px;">
+    <p class="lead">
+      Antes de iniciar o AI-DLC, é recomendado preparar dois documentos que alimentam a <strong>Inception Phase</strong>.
+      Eles reduzem as perguntas de esclarecimento da IA e garantem que a decomposição parta do contexto real do projeto.
+    </p>
+    <div class="two-col">
+
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="card" style="flex:1;">
+          <h3>📄 Documento de Visão <span style="font-weight:400; color:var(--gray-text); font-size:12px;">(Vision Document)</span></h3>
+          <p><strong>O que construir e por quê.</strong> Deve conter:</p>
+          <ul class="bullet" style="margin-top:6px;">
+            <li>Descrição do que está sendo construído e para quem</li>
+            <li>Funcionalidades em escopo</li>
+            <li>Funcionalidades explicitamente <strong>fora</strong> do escopo</li>
+            <li>Perguntas abertas — incertezas já conhecidas</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:10px;">
+        <div class="card" style="flex:1;">
+          <h3>⚙️ Documento de Ambiente Técnico <span style="font-weight:400; color:var(--gray-text); font-size:12px;">(Technical Environment Document)</span></h3>
+          <p><strong>Ferramentas e restrições do projeto.</strong> Deve conter:</p>
+          <ul class="bullet" style="margin-top:6px;">
+            <li>Linguagem, versão, framework e gerenciador de pacotes</li>
+            <li>Provedor cloud e modelo de deploy</li>
+            <li>Framework de testes</li>
+            <li>Tabela de bibliotecas proibidas (com motivo e alternativa)</li>
+            <li>Exemplos de código de endpoint, função e teste</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+    <div class="box" style="font-size:13px;">
+      Ao iniciar o AI-DLC, indique no Intent que os documentos serão utilizados como base:<br><br>
+      <code style="background:rgba(255,255,255,.15); padding:3px 10px; border-radius:4px; font-size:12px;">"Usando AI-DLC, quero construir [intenção]. Utilize o Vision Document em [caminho] e o Technical Environment Document em [caminho] como base."</code><br><br>
+      📚 Guias e modelos: <strong>github.com/awslabs/aidlc-workflows/tree/main/docs</strong>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>14 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 11 — Flexibilidade ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Flexibilidade</span>
+    <h2>O AI-DLC Não é Engessado</h2>
+  </div>
+  <div class="slide-body" style="gap:14px;">
+    <p class="lead">
+      O AI-DLC <strong>não obriga a passar por todas as fases</strong> em toda execução.
+      O usuário tem o controle sobre até onde quer ir em cada sessão.
+    </p>
+    <div class="three-col">
+      <div class="card">
+        <h3>Somente Planejamento</h3>
+        <p>Execute apenas a <strong>Inception Phase</strong> para criar User Stories e Unidades — e interrompa. Retome o desenvolvimento em outro momento, com o contexto já documentado.</p>
+      </div>
+      <div class="card">
+        <h3>Desenvolvimento Direto</h3>
+        <p>Inicie direto na <strong>Construction Phase</strong> a partir de histórias já criadas anteriormente, sem precisar repetir a Iniciação.</p>
+      </div>
+      <div class="card">
+        <h3>Execução Parcial</h3>
+        <p>Execute <strong>um único Bolt</strong> de uma Unidade específica, sem precisar concluir todos os outros Bolts ou Unidades.</p>
+      </div>
+    </div>
+    <div class="box" style="font-size:13px;">
+      Basta indicar o escopo desejado diretamente no Intent:<br><br>
+      <code style="background:rgba(255,255,255,.15); padding:3px 10px; border-radius:4px; font-size:12px;">"Usando AI-DLC, quero apenas criar as User Stories para [intenção]. Pare após a geração das histórias."</code>
+    </div>
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>15 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 12 — Setup ══ -->
+<section class="slide">
+  <div class="slide-header">
+    <span class="label">Como Usar</span>
+    <h2>Setup — Configurando o AI-DLC no Seu Projeto</h2>
+  </div>
+  <div class="slide-body" style="gap: 12px;">
+
+    <div class="card" style="background:#eff6ff; border-left: 3px solid var(--blue-light);">
+      <h3 style="font-size:13px;">1. Baixe e descompacte a release oficial</h3>
+      <p style="font-size:12px; line-height:1.6;">Acesse <strong>github.com/awslabs/aidlc-workflows/releases/latest</strong> e baixe o zip. Após extrair, você terá:<br>
+      — <code style="background:#e2e8f0; padding:1px 5px; border-radius:3px; font-size:11px;">aws-aidlc-rules/core-workflow.md</code> → arquivo que deve ser <strong>renomeado</strong> conforme o assistente<br>
+      — <code style="background:#e2e8f0; padding:1px 5px; border-radius:3px; font-size:11px;">aws-aidlc-rule-details/</code> → pasta que deve ser renomeada para <strong>.aidlc-rule-details/</strong> dentro do projeto</p>
+    </div>
+
+    <p style="font-size:13px; font-weight:600; color:var(--blue-dark);">2. Renomeie e copie para o seu projeto — escolha o assistente:</p>
+
+    <div class="three-col" style="flex: 1;">
+
+      <!-- Claude Code -->
+      <div style="display:flex; flex-direction:column; gap:7px;">
+        <div style="background:var(--blue-dark); color:var(--white); border-radius:8px 8px 0 0; padding:8px 14px; font-size:12px; font-weight:700;">Claude Code</div>
+        <div style="background:var(--gray-light); border-radius:0 0 8px 8px; padding:12px 14px; flex:1; display:flex; flex-direction:column; gap:7px;">
+          <p style="font-size:12px; color:#334155;">Renomeie <code style="background:#e2e8f0; padding:1px 4px; border-radius:3px;">core-workflow.md</code> para <strong>CLAUDE.md</strong> na raiz do projeto.</p>
+          <div style="background:#1e293b; border-radius:6px; padding:10px 12px; font-family:monospace; font-size:10.5px; color:#94a3b8; line-height:1.7;">
+            <span style="color:#86efac;">meu-projeto/</span><br>
+            ├── <span style="color:#fbbf24;">CLAUDE.md</span><br>
+            └── .aidlc-rule-details/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;├── common/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;├── inception/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;├── construction/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;└── operations/
+          </div>
+        </div>
+      </div>
+
+      <!-- GitHub Copilot -->
+      <div style="display:flex; flex-direction:column; gap:7px;">
+        <div style="background:var(--blue-dark); color:var(--white); border-radius:8px 8px 0 0; padding:8px 14px; font-size:12px; font-weight:700;">GitHub Copilot</div>
+        <div style="background:var(--gray-light); border-radius:0 0 8px 8px; padding:12px 14px; flex:1; display:flex; flex-direction:column; gap:7px;">
+          <p style="font-size:12px; color:#334155;">Renomeie para <strong>copilot-instructions.md</strong> e coloque em <code style="background:#e2e8f0; padding:1px 4px; border-radius:3px;">.github/</code>.</p>
+          <div style="background:#1e293b; border-radius:6px; padding:10px 12px; font-family:monospace; font-size:10.5px; color:#94a3b8; line-height:1.7;">
+            <span style="color:#86efac;">meu-projeto/</span><br>
+            ├── .github/<br>
+            │&nbsp;&nbsp;&nbsp;└── <span style="color:#fbbf24;">copilot-instructions.md</span><br>
+            └── .aidlc-rule-details/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;├── common/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;├── inception/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;├── construction/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;└── operations/
+          </div>
+        </div>
+      </div>
+
+      <!-- OpenAI Codex -->
+      <div style="display:flex; flex-direction:column; gap:7px;">
+        <div style="background:var(--blue-dark); color:var(--white); border-radius:8px 8px 0 0; padding:8px 14px; font-size:12px; font-weight:700;">OpenAI Codex</div>
+        <div style="background:var(--gray-light); border-radius:0 0 8px 8px; padding:12px 14px; flex:1; display:flex; flex-direction:column; gap:7px;">
+          <p style="font-size:12px; color:#334155;">Renomeie <code style="background:#e2e8f0; padding:1px 4px; border-radius:3px;">core-workflow.md</code> para <strong>AGENTS.md</strong> na raiz do projeto.</p>
+          <div style="background:#1e293b; border-radius:6px; padding:10px 12px; font-family:monospace; font-size:10.5px; color:#94a3b8; line-height:1.7;">
+            <span style="color:#86efac;">meu-projeto/</span><br>
+            ├── <span style="color:#fbbf24;">AGENTS.md</span><br>
+            └── .aidlc-rule-details/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;├── common/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;├── inception/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;├── construction/<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;└── operations/
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="box" style="font-size:13px;">
+      <strong>3. Inicie o desenvolvimento</strong> — use o comando conforme o idioma desejado:<br><br>
+      🇺🇸 Inglês: &nbsp;<code style="background:rgba(255,255,255,.15); padding:2px 8px; border-radius:4px;">Using AI-DLC, [describe your intent]</code><br>
+      🇧🇷 Português: &nbsp;<code style="background:rgba(255,255,255,.15); padding:2px 8px; border-radius:4px;">Usando AI-DLC, [descreva sua intenção]</code>
+    </div>
+
+  </div>
+  <div class="slide-footer">
+    <span><span class="dot"></span>github.com/engsoft-learn/ai-dlc</span>
+    <span>16 / 17</span>
+  </div>
+</section>
+
+
+<!-- ══ SLIDE 16 — Encerramento ══ -->
+<section class="slide cover" style="justify-content:space-between; padding: 48px 60px;">
+  <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; gap:20px; text-align:center;">
+    <div class="tag">Obrigado</div>
+    <h1 style="font-size:48px; font-weight:800; color:var(--white); letter-spacing:-1px; line-height:1.1;">
+      AI-<span style="color:var(--accent);">DLC</span>
+    </h1>
+    <p style="font-size:16px; color:rgba(255,255,255,.7); max-width:480px; line-height:1.7;">
+      Uma nova forma de desenvolver software —<br>onde a IA lidera e o humano decide.
+    </p>
+    <div style="display:flex; gap:14px; margin-top:8px; flex-wrap:wrap; justify-content:center;">
+      <div style="background:rgba(255,255,255,.1); border-radius:8px; padding:10px 20px; font-size:12px; color:rgba(255,255,255,.8);">
+        📄 White Paper<br><a href="https://prod.d13rzhkk8cj2z0.amplifyapp.com/" style="color:var(--accent); text-decoration:none; font-size:11px;">prod.d13rzhkk8cj2z0.amplifyapp.com</a>
+      </div>
+      <div style="background:rgba(255,255,255,.1); border-radius:8px; padding:10px 20px; font-size:12px; color:rgba(255,255,255,.8);">
+        ⚙️ Setup &amp; Docs<br><a href="https://github.com/awslabs/aidlc-workflows" style="color:var(--accent); text-decoration:none; font-size:11px;">github.com/awslabs/aidlc-workflows</a>
+      </div>
+      <div style="background:rgba(255,255,255,.1); border-radius:8px; padding:10px 20px; font-size:12px; color:rgba(255,255,255,.8);">
+        📚 Docs pt-br<br><a href="https://github.com/engsoft-learn/ai-dlc" style="color:var(--accent); text-decoration:none; font-size:11px;">github.com/engsoft-learn/ai-dlc</a>
+      </div>
+    </div>
+  </div>
+  <div style="text-align:center; font-size:12px; color:rgba(255,255,255,.35); letter-spacing:.4px;">
+    Ricardo de Luna Galdino — Software Engineer — Jun/2026
+  </div>
+</section>
+
+</body>
+</html>
